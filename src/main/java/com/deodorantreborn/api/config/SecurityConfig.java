@@ -17,15 +17,15 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
-                .requestMatchers("/api/feedback/**").permitAll()
-                .requestMatchers("/api/feature-requests/**").permitAll()
-                .requestMatchers("/api/plugin-download/**").permitAll()
-                .requestMatchers("/api/plugin/**").permitAll()
+                .requestMatchers("/feedback", "/feedback/**").permitAll()
+                .requestMatchers("/feature-requests", "/feature-requests/**").permitAll()
+                .requestMatchers("/plugin-download", "/plugin-download/**").permitAll()
+                .requestMatchers("/plugin", "/plugin/**").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/api-docs/**").permitAll()
-                // Everything else requires authentication
-                .anyRequest().authenticated()
+                // Everything else is denied
+                .anyRequest().denyAll()
             );
 
         return http.build();
