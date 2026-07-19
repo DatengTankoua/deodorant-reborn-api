@@ -1,33 +1,62 @@
 package com.deodorantreborn.api.feedback.controller;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping; 
+
+import com.deodorantreborn.api.feedback.dto.request.FeedbackRequest;
+import com.deodorantreborn.api.feedback.dto.response.FeedbackResponse;
 import com.deodorantreborn.api.feedback.service.FeedbackService;
-import com.deodorantreborn.api.feedback.entity.Feedback;
-import com.deodorantreborn.api.feedback.dto.response.FeedbackResponse; 
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/feedback")
+@RequiredArgsConstructor          
 public class FeedbackController {
+
     private final FeedbackService feedbackService;
 
-    public FeedbackController(FeedbackService feedbackService) {
-        this.feedbackService = feedbackService;
+    /**
+     * GET /api/feedback
+     * Gibt alle Feedbacks zurück
+     */
+    @GetMapping
+    public ResponseEntity<List<FeedbackResponse>> getAllFeedback() {
+        List<FeedbackResponse> feedbacks = feedbackService.getAllFeedback();
+        return ResponseEntity.ok(feedbacks);
     }
 
-    @GetMapping
-    public FeedbackResponse getFeedback() {
-        Feedback feedback = feedbackService.getFeedback();
-        if (feedback == null) {
-            return null; // or handle the case when no feedback is found
-        }
-        return FeedbackResponse.builder()
-                .id(feedback.getId())
-                .email(feedback.getEmail())
-                .message(feedback.getMessage())
-                .rating(feedback.getRating())
-                .createdAt(feedback.getCreatedAt())
-                .build();
+    /**
+     * GET /api/feedback/{id}
+     * Gibt ein einzelnes Feedback zurück
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<FeedbackResponse> getFeedbackById(@PathVariable UUID id) {
+        FeedbackResponse feedback = feedbackService.getFeedbackById(id);
+        return ResponseEntity.ok(feedback);
     }
-    
+
+    /**
+     * POST /api/feedback
+     * Erstellt ein neues Feedback
+     */
+    @PostMapping
+    public ResponseEntity<FeedbackResponse> submitFeedback(
+            @Valid @RequestBody FeedbackRequest request) {
+        FeedbackResponse created = feedbackService.submitFeedback(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    /**
+     * DELETE /api/feedback/{id}
+     * Löscht ein Feedback (nur Admin)
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFeedback(@PathVariable UUID id) {
+        feedbackService.deleteFeedback(id);
+        return ResponseEntity.noContent().build();
+    }
 }
