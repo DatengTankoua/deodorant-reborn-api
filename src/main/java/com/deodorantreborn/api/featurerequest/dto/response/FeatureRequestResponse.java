@@ -1,7 +1,8 @@
-package com.deodorantreborn.api.feedback.dto.response;
+package com.deodorantreborn.api.featurerequest.dto.response;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -13,20 +14,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FeedbackResponse {
+public class FeatureRequestResponse {
 
     @NotNull
     private UUID id;
 
     @NotNull @NotBlank
-    private String email;
+    private String title;
 
     @NotNull @NotBlank
-    private String message;
+    private String description;
+
+    @NotNull @NotBlank
+    private String email;
 
     @NotNull
-    private Integer rating;
+    private Integer votes;
 
     @NotNull
     private OffsetDateTime createdAt;
+    
 }

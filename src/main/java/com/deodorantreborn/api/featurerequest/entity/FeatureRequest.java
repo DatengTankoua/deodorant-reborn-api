@@ -31,7 +31,7 @@ public class FeatureRequest {
     private String email;
 
     @Column(name = "votes")
-    private Integer votes = 0;
+    private Integer votes;
 
     @Column(name = "created_at", updatable = false)
     private OffsetDateTime createdAt;
